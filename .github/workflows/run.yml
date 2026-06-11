@@ -1,0 +1,23 @@
+name: Discord Game Workflow
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # runs every 15 minutes (change the number to adjust)
+  workflow_dispatch:           # adds a manual "Run workflow" button for testing
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install psycopg2-binary requests python-dotenv schedule
+      - run: python main.py --once
+        env:
+          DATABASE_URL:      ${{ secrets.DATABASE_URL }}
+          DISCORD_WEBHOOK_0: ${{ secrets.DISCORD_WEBHOOK_0 }}
+          DISCORD_WEBHOOK_1: ${{ secrets.DISCORD_WEBHOOK_1 }}
+          DISCORD_WEBHOOK_2: ${{ secrets.DISCORD_WEBHOOK_2 }}
+          SEED_SAMPLE_DATA:  'true'
